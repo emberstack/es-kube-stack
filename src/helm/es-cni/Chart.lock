@@ -1,0 +1,6 @@
+dependencies:
+- name: tigera-operator
+  repository: https://docs.tigera.io/calico/charts
+  version: v3.26.1
+digest: sha256:6b3625a879c176f9c0909fb4bcbbbc843754370ee9fcad2ef40914587cd4f189
+generated: "2023-07-22T01:56:48.6796962+03:00"

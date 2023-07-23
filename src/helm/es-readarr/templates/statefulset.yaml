@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "es-readarr.fullname" . }}
+  labels:
+    {{- include "es-readarr.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ template "es-readarr.fullname" . }}-headless
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategyType }}
+    {{- if (eq "OnDelete" .Values.updateStrategyType) }}
+    rollingUpdate: null
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "es-readarr.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "es-readarr.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "es-readarr.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TZ
+              value: {{ .Values.config.timezone | quote }}
+            {{- range .Values.additionalEnv }}
+            - name: {{ .name }}
+              value: {{ tpl .value $ | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8787
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /mnt/downloads
+            - name: library
+              mountPath: /mnt/library
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+      {{- if .Values.persistence.config.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.config.existingClaim }}
+          claimName: {{ .Values.persistence.config.existingClaim }}
+          {{- else }}
+          claimName: {{ template "es-readarr.fullname" . }}-config
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: downloads
+      {{- if .Values.persistence.downloads.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.downloads.existingClaim }}
+          claimName: {{ .Values.persistence.downloads.existingClaim }}
+          {{- else }}
+          claimName: {{ template "es-readarr.fullname" . }}-downloads
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: library
+      {{- if .Values.persistence.library.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.library.existingClaim }}
+          claimName: {{ .Values.persistence.library.existingClaim }}
+          {{- else }}
+          claimName: {{ template "es-readarr.fullname" . }}-library
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

@@ -1,0 +1,29 @@
+{{- if .Values.certificates.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ include "es-certstore.fullname" . }}
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.certificates.letsencrypt.email }}
+    privateKeySecretRef:
+      name: {{ include "es-certstore.fullname" . }}-letsencrypt-accountkey
+    solvers:
+    {{- range .Values.certificates.azure.hostedZones }}
+      - selector:
+          dnsZones:
+          - {{ .name | quote }}
+        dns01:
+         azureDNS:
+            clientID: {{ $.Values.certificates.azure.servicePrincipal.clientId | quote}}
+            clientSecretSecretRef:
+              name: {{ include "es-certstore.fullname" $ }}-azure-principal
+              key: clientSecret
+            subscriptionID: {{ .subscriptionId | quote }}
+            tenantID: {{ $.Values.certificates.azure.servicePrincipal.tenantId | quote}}
+            resourceGroupName: {{ .resourceGroup | quote }}
+            hostedZoneName: {{ .name | quote }}
+            environment: AzurePublicCloud
+    {{- end }}
+{{- end }}

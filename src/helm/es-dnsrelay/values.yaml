@@ -1,0 +1,20 @@
+public:
+  enabled: false
+
+
+private-dns1:
+  enabled: false
+
+
+private-dns2:
+  enabled: false
+
+
+
+dns:
+  public:
+    enabled: false
+
+
+  private:
+    enabled: false

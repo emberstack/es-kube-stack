@@ -1,0 +1,15 @@
+{{- if .Values.dns.private.enabled }}
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: {{ include "es-dnsrelay.fullname" . }}-endpoints-private
+  labels:
+    {{- include "es-dnsrelay.labels" . | nindent 4 }}
+  annotations:
+    external-dns.alpha.kubernetes.io/private: "true"
+spec:
+{{- with .Values.dns.private.endpoints }} 
+  endpoints: 
+    {{- toYaml . | nindent 4 }} 
+{{- end }} 
+{{- end }}

@@ -1,0 +1,151 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "tdarr-server.fullname" . }}
+  labels:
+    {{- include "tdarr-server.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ template "tdarr-server.fullname" . }}-headless
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategyType }}
+    {{- if (eq "OnDelete" .Values.updateStrategyType) }}
+    rollingUpdate: null
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tdarr-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tdarr-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tdarr-server.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TZ
+              value: {{ .Values.config.timezone | quote }}
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: all
+            - name: CUDA_DRIVER_CAPABILITIES
+              value: all
+            - name: webUIPort
+              value: "8265"
+            - name: serverIP
+              value: {{ .Values.config.server.serverIP | quote }}
+            - name: serverPort
+              value: {{ .Values.config.server.serverPort | quote }}
+            - name: internalNode
+              value: {{ .Values.config.internalNode.enabled | quote }}
+            - name: nodeId
+              value: {{ .Values.config.internalNode.nodeId | quote }}
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            {{- range .Values.additionalEnv }}
+            - name: {{ .name }}
+              value: {{ tpl .value $ | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8265
+              protocol: TCP
+            - name: server
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: configs
+              mountPath: /app/configs
+            - name: server
+              mountPath: /app/server
+            - name: temp
+              mountPath: /temp
+            - name: media
+              mountPath: /media
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: configs
+      {{- if .Values.persistence.configs.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.configs.existingClaim }}
+          claimName: {{ .Values.persistence.configs.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-server.fullname" . }}-configs
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: server
+      {{- if .Values.persistence.server.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.server.existingClaim }}
+          claimName: {{ .Values.persistence.lidatabrary.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-server.fullname" . }}-server
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: temp
+      {{- if .Values.persistence.temp.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.temp.existingClaim }}
+          claimName: {{ .Values.persistence.temp.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-server.fullname" . }}-temp
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: media
+      {{- if .Values.persistence.media.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.media.existingClaim }}
+          claimName: {{ .Values.persistence.media.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-server.fullname" . }}-media
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

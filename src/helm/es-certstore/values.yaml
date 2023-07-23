@@ -1,0 +1,27 @@
+cert-manager:
+  # # fullnameOverride: cert-manager
+  enabled: false
+  # installCRDs: true
+  # extraArgs:
+  #   - --dns01-recursive-nameservers-only
+  #   - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+  # nodeSelector:
+  #   kubernetes.io/arch: amd64
+  #   kubernetes.io/os: linux
+  # webhook:
+  #   nodeSelector:
+  #     kubernetes.io/arch: amd64
+  #     kubernetes.io/os: linux
+  # cainjector:
+  #   nodeSelector:
+  #     kubernetes.io/arch: amd64
+  #     kubernetes.io/os: linux      
+
+
+fortios:
+
+
+
+
+certificates:
+  enabled: false

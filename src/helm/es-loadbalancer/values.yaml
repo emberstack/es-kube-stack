@@ -1,0 +1,19 @@
+metallb:
+  enabled: false
+#   controller:
+#     nodeSelector:
+#       # kubernetes.io/arch: amd64
+#       kubernetes.io/os: linux
+#   speaker:
+#     secretValue: "A6J3t6LCBbErrPgT"
+#     nodeSelector:
+#       kubernetes.io/os: linux
+
+  
+# addressPools:
+#   enabled: false
+#   pools:
+#     - name: default-address-pool
+#       advertiseL2: true
+#       addresses:
+#         - 10.5.64.11-10.5.127.254

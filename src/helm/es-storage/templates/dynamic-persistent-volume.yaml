@@ -1,0 +1,27 @@
+{{- if .Values.storage.enabled }}
+{{- range .Values.storage.persistentVolumes }}
+{{- $persistentVolume := . -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $persistentVolume.name}}
+{{- if $persistentVolume.namespace }}
+  namespace: {{ $persistentVolume.namespace }}
+{{- end }}
+  labels:
+    {{- include "es-storage.labels" $ | nindent 4 }}
+{{ toYaml $persistentVolume.labels | indent 4 }}
+  annotations:
+{{ toYaml $persistentVolume.annotations | indent 4 }}
+spec:
+{{ toYaml $persistentVolume.spec | indent 4 }}
+---
+{{- end }}
+{{- end }}
+
+
+
+
+
+
+  

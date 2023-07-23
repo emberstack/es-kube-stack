@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.library.enabled (not .Values.persistence.library.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "es-plex.fullname" . }}-library
+  labels:
+    {{- include "es-plex.labels" . | nindent 4 }}
+{{- if .Values.persistence.library.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.library.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.library.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.library.size | quote }}
+{{- if .Values.persistence.library.storageClass }}
+{{- if (eq "-" .Values.persistence.library.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.library.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

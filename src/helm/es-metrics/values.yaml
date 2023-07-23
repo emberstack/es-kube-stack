@@ -1,0 +1,6 @@
+metrics-server:
+  enabled: false
+
+
+kube-prometheus-stack:
+  enabled: false

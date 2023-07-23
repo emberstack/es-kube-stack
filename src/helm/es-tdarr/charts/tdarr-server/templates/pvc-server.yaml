@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.server.enabled (not .Values.persistence.server.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "tdarr-server.fullname" . }}-server
+  labels:
+    {{- include "tdarr-server.labels" . | nindent 4 }}
+{{- if .Values.persistence.server.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.server.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.server.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.server.size | quote }}
+{{- if .Values.persistence.server.storageClass }}
+{{- if (eq "-" .Values.persistence.server.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.server.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

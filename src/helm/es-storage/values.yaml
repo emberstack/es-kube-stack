@@ -1,0 +1,13 @@
+local-path-provisioner:
+  enabled: false
+
+csi-driver-smb:
+  enabled: false
+
+storage:
+  enabled: false
+  persistentVolumes:
+  smb:
+    storageClasses:
+
+

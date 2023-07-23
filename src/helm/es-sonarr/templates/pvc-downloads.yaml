@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.downloads.enabled (not .Values.persistence.downloads.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "es-sonarr.fullname" . }}-downloads
+  labels:
+    {{- include "es-sonarr.labels" . | nindent 4 }}
+{{- if .Values.persistence.downloads.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.downloads.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.downloads.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.downloads.size | quote }}
+{{- if .Values.persistence.downloads.storageClass }}
+{{- if (eq "-" .Values.persistence.downloads.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.downloads.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

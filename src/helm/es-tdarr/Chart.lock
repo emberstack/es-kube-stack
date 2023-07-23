@@ -1,0 +1,9 @@
+dependencies:
+- name: tdarr-server
+  repository: ""
+  version: 0.1.0
+- name: tdarr-node
+  repository: ""
+  version: 0.1.0
+digest: sha256:2e238aac310791ef4a6f66be433a8e78820360144da07be808162f7fe1d049fe
+generated: "2023-01-22T15:22:13.1493578+02:00"

@@ -1,0 +1,32 @@
+{{- if .Values.addressPools.enabled }}
+{{- range .Values.addressPools.pools }}
+{{- $pool := . -}}
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ $pool.name}}
+spec:
+  addresses: 
+  {{- range $pool.addresses }}
+    - {{ . | quote }}
+  {{- end }}
+
+---
+
+{{- if $pool.advertiseL2 }}
+
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: {{ $pool.name}}-advertise-l2
+spec:
+  ipAddressPools:
+  - {{ $pool.name}}
+
+---
+
+{{- end }}
+
+{{- end }}
+{{- end }}
