@@ -19,9 +19,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 
-additionalEnv:
-  - name: DOCKER_MODS
-    value: "gilbn/theme.park:prowlarr"
+additionalEnv: []
 
 config:
   timezone: Europe/Bucharest
