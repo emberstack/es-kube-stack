@@ -19,7 +19,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 
-additionalEnv: []
+additionalEnv:
+  - name: DOCKER_MODS
+    value: ghcr.io/gilbn/theme.park:sonarr
 
 config:
   timezone: ""
