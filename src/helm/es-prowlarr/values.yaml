@@ -8,7 +8,7 @@ updateStrategyType: RollingUpdate
 
 
 image:
-  repository: ghcr.io/linuxserver/jackett
+  repository: ghcr.io/linuxserver/prowlarr
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -21,10 +21,10 @@ fullnameOverride: ""
 
 additionalEnv:
   - name: DOCKER_MODS
-    value: "gilbn/theme.park:jackett"
+    value: "gilbn/theme.park:prowlarr"
 
 config:
-  timezone: ""
+  timezone: Europe/Bucharest
 
 persistence:
   config:
@@ -59,7 +59,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  port: 9117
+  port: 9696
   type: ClusterIP
   annotations: {}
 

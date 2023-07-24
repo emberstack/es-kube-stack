@@ -27,7 +27,7 @@ additionalEnv:
     value: "dark"
 
 config:
-  timezone: Europe/Bucharest
+  timezone: ""
 
 persistence:
   config:
