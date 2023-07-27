@@ -10,7 +10,11 @@ metadata:
   name: {{ template "es-certstore.fullname" $ }}-{{ $cert.name }}
 {{- end }}
 spec:
+{{- if $cert.fullnameOverride }}
+  secretName: {{ $cert.fullnameOverride }}
+{{- else }}
   secretName: {{ template "es-certstore.fullname" $ }}-{{ $cert.name }}
+{{- end }}
   {{- if $cert.secretTemplate }}
   secretTemplate:
     {{ toYaml $cert.secretTemplate | nindent 4 }}
