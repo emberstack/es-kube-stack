@@ -4,7 +4,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+{{- if $cert.fullnameOverride }}
+  name: {{ $cert.fullnameOverride }}
+{{- else }}
   name: {{ template "es-certstore.fullname" $ }}-{{ $cert.name }}
+{{- end }}
 spec:
   secretName: {{ template "es-certstore.fullname" $ }}-{{ $cert.name }}
   {{- if $cert.secretTemplate }}
