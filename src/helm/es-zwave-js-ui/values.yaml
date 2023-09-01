@@ -1,0 +1,109 @@
+# Default values for plex.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+updateStrategyType: OnDelete
+
+
+
+
+image:
+  repository: zwavejs/zwave-js-ui
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+
+additionalEnv:
+  # - name: SESSION_SECRET
+  #   value: "EJbPk58ayrBMEEkE"
+  # - name: KEY_S0_Legacy
+  #   value: "333DB42BE8DFCD5DB702011AD0836A9F"
+  # - name: KEY_S2_Unauthenticated
+  #   value: "541B60331E64D921A010DF04E0D19C68"
+  # - name: KEY_S2_Authenticated
+  #   value: "7BC44C913A508D9A6CC6C83A75C36538"
+  # - name: KEY_S2_AccessControl
+  #   value: "7C37F2524584EF2100A7D8EC13D9165E"
+config:
+  timezone: Europe/Bucharest
+  zwave:
+    device:
+      serialDevicePath: "" 
+
+persistence:
+  data:
+    enabled: false
+    # existingClaim: ""
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+  backups:
+    enabled: false
+    # existingClaim: ""
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  allowPrivilegeEscalation: true
+  privileged: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  ui:
+    port: 8989
+  websocket:
+    port: 3000
+  annotations: {}
+
+ingress:
+  enabled: false
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

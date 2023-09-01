@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "zwave-js-ui.fullname" . }}
+  labels:
+    {{- include "zwave-js-ui.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ template "zwave-js-ui.fullname" . }}-headless
+  replicas: 1
+  updateStrategy:
+    type: {{ .Values.updateStrategyType }}
+    {{- if (eq "OnDelete" .Values.updateStrategyType) }}
+    rollingUpdate: null
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "zwave-js-ui.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zwave-js-ui.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "zwave-js-ui.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            # - name: STORE_DIR
+            #   value: "/usr/src/app/store/data"
+            # - name: ZWAVEJS_EXTERNAL_CONFIG
+            #   value: "/usr/src/app/store/data/.config-db"
+            # - name: BACKUPS_DIR
+            #   value: "/usr/src/app/backups"
+            - name: TZ
+              value: {{ .Values.config.timezone | quote }}
+            {{- range .Values.additionalEnv }}
+            - name: {{ .name }}
+              value: {{ tpl .value $ | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8091
+              protocol: TCP
+            - name: websocket
+              containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /dev/zwave
+              name: zwavestick
+            - mountPath: /usr/src/app/store
+              name: data
+            - mountPath: /usr/src/app/store/backups
+              name: backups
+          livenessProbe:
+           failureThreshold: 10
+           httpGet:
+             httpHeaders:
+             - name: Accept
+               value: text/plain
+             path: /health
+             port: http
+           initialDelaySeconds: 30
+           periodSeconds: 10
+           successThreshold: 1
+           timeoutSeconds: 1
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: zwavestick
+        hostPath: 
+          path: {{ .Values.config.zwave.device.serialDevicePath }}
+      - name: data
+      {{- if .Values.persistence.data.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.data.existingClaim }}
+          claimName: {{ .Values.persistence.data.existingClaim }}
+          {{- else }}
+          claimName: {{ template "zwave-js-ui.fullname" . }}-data
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: backups
+      {{- if .Values.persistence.backups.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.backups.existingClaim }}
+          claimName: {{ .Values.persistence.backups.existingClaim }}
+          {{- else }}
+          claimName: {{ template "zwave-js-ui.fullname" . }}-backups
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      

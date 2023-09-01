@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.backups.enabled (not .Values.persistence.backups.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "zwave-js-ui.fullname" . }}-backups
+  labels:
+    {{- include "zwave-js-ui.labels" . | nindent 4 }}
+{{- if .Values.persistence.backups.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.backups.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.backups.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.backups.size | quote }}
+{{- if .Values.persistence.backups.storageClass }}
+{{- if (eq "-" .Values.persistence.backups.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.backups.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
