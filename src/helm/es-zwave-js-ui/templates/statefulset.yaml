@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "zwave-js-ui.fullname" . }}
+  name: {{ include "es-zwave-js-ui.fullname" . }}
   labels:
-    {{- include "zwave-js-ui.labels" . | nindent 4 }}
+    {{- include "es-zwave-js-ui.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ template "zwave-js-ui.fullname" . }}-headless
+  serviceName: {{ template "es-zwave-js-ui.fullname" . }}-headless
   replicas: 1
   updateStrategy:
     type: {{ .Values.updateStrategyType }}
@@ -14,7 +14,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      {{- include "zwave-js-ui.selectorLabels" . | nindent 6 }}
+      {{- include "es-zwave-js-ui.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -22,13 +22,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "zwave-js-ui.selectorLabels" . | nindent 8 }}
+        {{- include "es-zwave-js-ui.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "zwave-js-ui.serviceAccountName" . }}
+      serviceAccountName: {{ include "es-zwave-js-ui.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -104,7 +104,7 @@ spec:
           {{- if .Values.persistence.data.existingClaim }}
           claimName: {{ .Values.persistence.data.existingClaim }}
           {{- else }}
-          claimName: {{ template "zwave-js-ui.fullname" . }}-data
+          claimName: {{ template "es-zwave-js-ui.fullname" . }}-data
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -115,7 +115,7 @@ spec:
           {{- if .Values.persistence.backups.existingClaim }}
           claimName: {{ .Values.persistence.backups.existingClaim }}
           {{- else }}
-          claimName: {{ template "zwave-js-ui.fullname" . }}-backups
+          claimName: {{ template "es-zwave-js-ui.fullname" . }}-backups
           {{- end -}}
       {{- else }}
         emptyDir: {}

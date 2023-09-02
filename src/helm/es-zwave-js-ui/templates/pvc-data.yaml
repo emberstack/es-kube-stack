@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "zwave-js-ui.fullname" . }}-data
+  name: {{ template "es-zwave-js-ui.fullname" . }}-data
   labels:
-    {{- include "zwave-js-ui.labels" . | nindent 4 }}
+    {{- include "es-zwave-js-ui.labels" . | nindent 4 }}
 {{- if .Values.persistence.data.annotations }}
   annotations:
 {{ toYaml .Values.persistence.data.annotations | indent 4 }}
