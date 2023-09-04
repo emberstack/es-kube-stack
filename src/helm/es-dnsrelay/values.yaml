@@ -10,6 +10,18 @@ private-dns2:
   enabled: false
 
 
+private-dns3:
+  enabled: false
+
+private-dns4:
+  enabled: false
+
+private-dns5:
+  enabled: false
+
+private-dns6:
+  enabled: false
+
 
 dns:
   public:

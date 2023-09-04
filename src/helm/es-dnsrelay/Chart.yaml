@@ -40,3 +40,23 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   alias: private-dns2
   condition: private-dns2.enabled
+- name: external-dns
+  version: 6.20.4
+  repository: https://charts.bitnami.com/bitnami
+  alias: private-dns3
+  condition: private-dns3.enabled
+- name: external-dns
+  version: 6.20.4
+  repository: https://charts.bitnami.com/bitnami
+  alias: private-dns4
+  condition: private-dns4.enabled
+- name: external-dns
+  version: 6.20.4
+  repository: https://charts.bitnami.com/bitnami
+  alias: private-dns5
+  condition: private-dns5.enabled
+- name: external-dns
+  version: 6.20.4
+  repository: https://charts.bitnami.com/bitnami
+  alias: private-dns6
+  condition: private-dns6.enabled
