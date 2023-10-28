@@ -7,10 +7,7 @@ kind: IPAddressPool
 metadata:
   name: {{ $pool.name}}
 spec:
-  addresses: 
-  {{- range $pool.addresses }}
-    - {{ . | quote }}
-  {{- end }}
+{{ $pool.spec | toYaml | indent 2 }}
 
 ---
 
