@@ -1,0 +1,5 @@
+nameOverride: ""
+fullnameOverride: ""
+
+intel-gpu-operator:
+  enabled: false
