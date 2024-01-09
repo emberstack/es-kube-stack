@@ -8,3 +8,8 @@ nvidia-gpu-operator:
   devicePlugin:
     config:
       create: false
+nvidia-gpu-feature-discovery:
+  enabled: false
+  nfd:
+    enabled: false
+    migStrategy: mixed
