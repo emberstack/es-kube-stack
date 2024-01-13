@@ -1,24 +1,24 @@
 dependencies:
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
+  version: 6.29.1
 - name: external-dns
   repository: https://charts.bitnami.com/bitnami
-  version: 6.27.0
-digest: sha256:2eaaa2fd871d6639713de643922241f7cadb7a4b0de60c5b45a28db9eb7c2904
-generated: "2023-10-28T23:22:24.9772834+03:00"
+  version: 6.29.1
+digest: sha256:282f20617eab11da7be6bb967b328d0a61534b0ffff33d2278b0a1e2dc32e3c8
+generated: "2024-01-13T22:24:36.6437964+02:00"

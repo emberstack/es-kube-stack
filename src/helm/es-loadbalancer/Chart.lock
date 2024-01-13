@@ -1,6 +1,6 @@
 dependencies:
 - name: metallb
   repository: https://charts.bitnami.com/bitnami
-  version: 4.7.11
-digest: sha256:df72722d280ce12cf62940ebe53bbc550637a88500884552b7bab3d7573db3eb
-generated: "2023-10-28T22:46:44.6987252+03:00"
+  version: 4.9.1
+digest: sha256:6b60f3f1d6ec1e50e96062202d15b80da8c17f15d59e08b1f577fde8b4e73f97
+generated: "2024-01-13T22:23:40.0803072+02:00"
