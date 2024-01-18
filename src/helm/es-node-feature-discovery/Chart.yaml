@@ -28,5 +28,5 @@ dependencies:
 - name: node-feature-discovery
   version: 0.15.1
   repository: https://kubernetes-sigs.github.io/node-feature-discovery/charts
-  alias: nfd
-  condition: nfd.enabled
+  alias: node-feature-discovery
+  condition: node-feature-discovery.enabled
