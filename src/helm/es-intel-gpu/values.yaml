@@ -1,5 +1,8 @@
 nameOverride: ""
 fullnameOverride: ""
 
-intel-gpu-operator:
+intel-device-plugins-operator:
+  enabled: false
+
+intel-device-plugins-gpu:
   enabled: false
