@@ -8,8 +8,13 @@ metadata:
   name: {{ $storageClass.name}}
   labels:
     {{- include "es-storage.labels" $ | nindent 4 }}
+{{- if $storageClass.labels }}
+{{ toYaml $storageClass.labels | indent 4 }}
+{{- end }}
   annotations:
+{{- if $storageClass.annotations }}
 {{ toYaml $storageClass.annotations | indent 4 }}
+{{- end }}
 provisioner: {{ $storageClass.provisioner | quote }}
 parameters:
 {{ toYaml $storageClass.parameters | indent 4 }}

@@ -10,9 +10,13 @@ metadata:
 {{- end }}
   labels:
     {{- include "es-storage.labels" $ | nindent 4 }}
+{{- if $persistentVolume.labels }}
 {{ toYaml $persistentVolume.labels | indent 4 }}
+{{- end }}
   annotations:
+{{- if $persistentVolume.annotations }}
 {{ toYaml $persistentVolume.annotations | indent 4 }}
+{{- end }}
 spec:
 {{ toYaml $persistentVolume.spec | indent 4 }}
 ---

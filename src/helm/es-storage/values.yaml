@@ -8,6 +8,7 @@ storage:
   enabled: false
   persistentVolumes:
   storageClasses:
+
   smb:
     storageClasses:
 
