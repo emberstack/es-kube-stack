@@ -1,9 +1,6 @@
 dependencies:
 - name: gpu-operator
   repository: https://nvidia.github.io/gpu-operator
-  version: v23.9.0
-- name: gpu-feature-discovery
-  repository: https://nvidia.github.io/gpu-feature-discovery
-  version: 0.8.2
-digest: sha256:8abdb3b67019713d8e6ed1f5a6c1df7466cf2d054aa8716c15d273c0412d7424
-generated: "2024-01-09T16:05:37.6997613+02:00"
+  version: v23.9.1
+digest: sha256:457b96dea81d140de4675ce27cfbc3c162376ebf587b3c8aca5831704743b83d
+generated: "2024-01-19T19:41:06.215198+02:00"
