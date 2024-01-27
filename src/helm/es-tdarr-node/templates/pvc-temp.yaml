@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "tdarr-node-nvidia.fullname" . }}-temp
+  name: {{ template "es-tdarr-node.fullname" . }}-temp
   labels:
-    {{- include "tdarr-node-nvidia.labels" . | nindent 4 }}
+    {{- include "es-tdarr-node.labels" . | nindent 4 }}
 {{- if .Values.persistence.temp.annotations }}
   annotations:
 {{ toYaml .Values.persistence.temp.annotations | indent 4 }}

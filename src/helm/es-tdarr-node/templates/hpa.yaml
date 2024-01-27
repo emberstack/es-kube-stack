@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "tdarr-node-intel.fullname" . }}
+  name: {{ include "es-tdarr-node.fullname" . }}
   labels:
-    {{- include "tdarr-node-intel.labels" . | nindent 4 }}
+    {{- include "es-tdarr-node.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "tdarr-node-intel.fullname" . }}
+    name: {{ include "es-tdarr-node.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

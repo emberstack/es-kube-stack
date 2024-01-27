@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "tdarr-node.fullname" . }}
+  name: {{ include "es-tdarr-node.fullname" . }}
   labels:
-    {{- include "tdarr-node.labels" . | nindent 4 }}
+    {{- include "es-tdarr-node.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ template "tdarr-node.fullname" . }}-headless
+  serviceName: {{ template "es-tdarr-node.fullname" . }}-headless
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
@@ -16,7 +16,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      {{- include "tdarr-node.selectorLabels" . | nindent 6 }}
+      {{- include "es-tdarr-node.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,13 +24,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tdarr-node.selectorLabels" . | nindent 8 }}
+        {{- include "es-tdarr-node.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tdarr-node.serviceAccountName" . }}
+      serviceAccountName: {{ include "es-tdarr-node.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -56,10 +56,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
             {{- range .Values.additionalEnv }}
             - name: {{ .name }}
               value: {{ tpl .value $ | quote }}
@@ -104,7 +100,7 @@ spec:
           {{- if .Values.persistence.configs.existingClaim }}
           claimName: {{ .Values.persistence.configs.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node.fullname" . }}-configs
+          claimName: {{ template "es-tdarr-node.fullname" . }}-configs
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -115,7 +111,7 @@ spec:
           {{- if .Values.persistence.temp.existingClaim }}
           claimName: {{ .Values.persistence.temp.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node.fullname" . }}-temp
+          claimName: {{ template "es-tdarr-node.fullname" . }}-temp
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -126,7 +122,7 @@ spec:
           {{- if .Values.persistence.media.existingClaim }}
           claimName: {{ .Values.persistence.media.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node.fullname" . }}-media
+          claimName: {{ template "es-tdarr-node.fullname" . }}-media
           {{- end -}}
       {{- else }}
         emptyDir: {}

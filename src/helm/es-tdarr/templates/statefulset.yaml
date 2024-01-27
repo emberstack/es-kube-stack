@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "tdarr-node-nvidia.fullname" . }}
+  name: {{ include "tdarr-server.fullname" . }}
   labels:
-    {{- include "tdarr-node-nvidia.labels" . | nindent 4 }}
+    {{- include "tdarr-server.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ template "tdarr-node-nvidia.fullname" . }}-headless
+  serviceName: {{ template "tdarr-server.fullname" . }}-headless
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
@@ -16,7 +16,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      {{- include "tdarr-node-nvidia.selectorLabels" . | nindent 6 }}
+      {{- include "tdarr-server.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,13 +24,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tdarr-node-nvidia.selectorLabels" . | nindent 8 }}
+        {{- include "tdarr-server.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tdarr-node-nvidia.serviceAccountName" . }}
+      serviceAccountName: {{ include "tdarr-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -48,29 +48,32 @@ spec:
               value: all
             - name: CUDA_DRIVER_CAPABILITIES
               value: all
+            - name: webUIPort
+              value: "8265"
             - name: serverIP
               value: {{ .Values.config.server.serverIP | quote }}
             - name: serverPort
               value: {{ .Values.config.server.serverPort | quote }}
-            - name: nodeID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
+            - name: internalNode
+              value: {{ .Values.config.internalNode.enabled | quote }}
+            - name: nodeId
+              value: {{ .Values.config.internalNode.nodeId | quote }}
             {{- range .Values.additionalEnv }}
             - name: {{ .name }}
               value: {{ tpl .value $ | quote }}
             {{- end }}
           ports:
-            - name: node
-              containerPort: 8268
+            - name: http
+              containerPort: 8265
+              protocol: TCP
+            - name: server
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           volumeMounts:
             - name: configs
               mountPath: /app/configs
+            - name: server
+              mountPath: /app/server
             - name: temp
               mountPath: /temp
             - name: media
@@ -104,7 +107,18 @@ spec:
           {{- if .Values.persistence.configs.existingClaim }}
           claimName: {{ .Values.persistence.configs.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node-nvidia.fullname" . }}-configs
+          claimName: {{ template "tdarr-server.fullname" . }}-configs
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: server
+      {{- if .Values.persistence.server.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.server.existingClaim }}
+          claimName: {{ .Values.persistence.lidatabrary.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-server.fullname" . }}-server
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -115,7 +129,7 @@ spec:
           {{- if .Values.persistence.temp.existingClaim }}
           claimName: {{ .Values.persistence.temp.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node-nvidia.fullname" . }}-temp
+          claimName: {{ template "tdarr-server.fullname" . }}-temp
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -126,7 +140,7 @@ spec:
           {{- if .Values.persistence.media.existingClaim }}
           claimName: {{ .Values.persistence.media.existingClaim }}
           {{- else }}
-          claimName: {{ template "tdarr-node-nvidia.fullname" . }}-media
+          claimName: {{ template "tdarr-server.fullname" . }}-media
           {{- end -}}
       {{- else }}
         emptyDir: {}

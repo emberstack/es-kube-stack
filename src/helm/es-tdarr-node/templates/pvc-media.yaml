@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "tdarr-node.fullname" . }}-media
+  name: {{ template "es-tdarr-node.fullname" . }}-media
   labels:
-    {{- include "tdarr-node.labels" . | nindent 4 }}
+    {{- include "es-tdarr-node.labels" . | nindent 4 }}
 {{- if .Values.persistence.media.annotations }}
   annotations:
 {{ toYaml .Values.persistence.media.annotations | indent 4 }}
