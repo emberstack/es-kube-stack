@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "tdarr-node-intel.fullname" . }}
+  labels:
+    {{- include "tdarr-node-intel.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ template "tdarr-node-intel.fullname" . }}-headless
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategyType }}
+    {{- if (eq "OnDelete" .Values.updateStrategyType) }}
+    rollingUpdate: null
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tdarr-node-intel.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tdarr-node-intel.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tdarr-node-intel.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TZ
+              value: {{ .Values.config.timezone | quote }}
+            - name: serverIP
+              value: {{ .Values.config.server.serverIP | quote }}
+            - name: serverPort
+              value: {{ .Values.config.server.serverPort | quote }}
+            - name: nodeID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            {{- range .Values.additionalEnv }}
+            - name: {{ .name }}
+              value: {{ tpl .value $ | quote }}
+            {{- end }}
+          ports:
+            - name: node
+              containerPort: 8268
+              protocol: TCP
+          volumeMounts:
+            - name: configs
+              mountPath: /app/configs
+            - name: temp
+              mountPath: /temp
+            - name: media
+              mountPath: /media
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: configs
+      {{- if .Values.persistence.configs.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.configs.existingClaim }}
+          claimName: {{ .Values.persistence.configs.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-node-intel.fullname" . }}-configs
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: temp
+      {{- if .Values.persistence.temp.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.temp.existingClaim }}
+          claimName: {{ .Values.persistence.temp.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-node-intel.fullname" . }}-temp
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: media
+      {{- if .Values.persistence.media.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.media.existingClaim }}
+          claimName: {{ .Values.persistence.media.existingClaim }}
+          {{- else }}
+          claimName: {{ template "tdarr-node-intel.fullname" . }}-media
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

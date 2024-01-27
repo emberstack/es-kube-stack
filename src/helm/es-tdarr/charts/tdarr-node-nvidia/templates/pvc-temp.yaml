@@ -1,0 +1,25 @@
+{{- if and .Values.persistence.temp.enabled (not .Values.persistence.temp.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "tdarr-node-nvidia.fullname" . }}-temp
+  labels:
+    {{- include "tdarr-node-nvidia.labels" . | nindent 4 }}
+{{- if .Values.persistence.temp.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.temp.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.temp.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.temp.size | quote }}
+{{- if .Values.persistence.temp.storageClass }}
+{{- if (eq "-" .Values.persistence.temp.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.temp.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
