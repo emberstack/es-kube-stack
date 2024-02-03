@@ -1,4 +1,4 @@
-# Default values for es-tdarr.
+# Default values for es-fileflows.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@ replicaCount: 1
 updateStrategyType: RollingUpdate
 
 image:
-  repository: haveagitgat/tdarr
+  repository: revenz/fileflows
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -18,19 +18,11 @@ fullnameOverride: ""
 
 config:
   timezone: Europe/Bucharest
-  server:
-    serverIP: 0.0.0.0
-    serverPort: 8266
-  internalNode:
-    enabled: false
-    nodeId: server-node
 
 additionalEnv: []
 
 persistence:
   configs:
-    enabled: false
-  server:
     enabled: false
   temp:
     enabled: false
@@ -73,7 +65,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8266
+  port: 5000
   annotations:
     external-dns.alpha.kubernetes.io/private: "true"
 

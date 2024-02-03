@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "es-tdarr.fullname" . }}
+  name: {{ include "es-fileflows.fullname" . }}
   labels:
-    {{- include "es-tdarr.labels" . | nindent 4 }}
+    {{- include "es-fileflows.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ template "es-tdarr.fullname" . }}-headless
+  serviceName: {{ template "es-fileflows.fullname" . }}-headless
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
@@ -16,7 +16,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      {{- include "es-tdarr.selectorLabels" . | nindent 6 }}
+      {{- include "es-fileflows.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,13 +24,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "es-tdarr.selectorLabels" . | nindent 8 }}
+        {{- include "es-fileflows.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "es-tdarr.serviceAccountName" . }}
+      serviceAccountName: {{ include "es-fileflows.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -42,38 +42,20 @@ spec:
           env:
             - name: TZ
               value: {{ .Values.config.timezone | quote }}
-            - name: NVIDIA_VISIBLE_DEVICES
-              value: all
-            - name: NVIDIA_DRIVER_CAPABILITIES
-              value: all
-            - name: CUDA_DRIVER_CAPABILITIES
-              value: all
-            - name: webUIPort
-              value: "8265"
-            - name: serverIP
-              value: {{ .Values.config.server.serverIP | quote }}
-            - name: serverPort
-              value: {{ .Values.config.server.serverPort | quote }}
-            - name: internalNode
-              value: {{ .Values.config.internalNode.enabled | quote }}
-            - name: nodeId
-              value: {{ .Values.config.internalNode.nodeId | quote }}
             {{- range .Values.additionalEnv }}
             - name: {{ .name }}
               value: {{ tpl .value $ | quote }}
             {{- end }}
           ports:
             - name: http
-              containerPort: 8265
+              containerPort: 5001
               protocol: TCP
             - name: server
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           volumeMounts:
             - name: configs
-              mountPath: /app/configs
-            - name: server
-              mountPath: /app/server
+              mountPath: /app/Data
             - name: temp
               mountPath: /temp
             - name: media
@@ -107,18 +89,7 @@ spec:
           {{- if .Values.persistence.configs.existingClaim }}
           claimName: {{ .Values.persistence.configs.existingClaim }}
           {{- else }}
-          claimName: {{ template "es-tdarr.fullname" . }}-configs
-          {{- end -}}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: server
-      {{- if .Values.persistence.server.enabled }}
-        persistentVolumeClaim:
-          {{- if .Values.persistence.server.existingClaim }}
-          claimName: {{ .Values.persistence.lidatabrary.existingClaim }}
-          {{- else }}
-          claimName: {{ template "es-tdarr.fullname" . }}-server
+          claimName: {{ template "es-fileflows.fullname" . }}-configs
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -129,7 +100,7 @@ spec:
           {{- if .Values.persistence.temp.existingClaim }}
           claimName: {{ .Values.persistence.temp.existingClaim }}
           {{- else }}
-          claimName: {{ template "es-tdarr.fullname" . }}-temp
+          claimName: {{ template "es-fileflows.fullname" . }}-temp
           {{- end -}}
       {{- else }}
         emptyDir: {}
@@ -140,7 +111,7 @@ spec:
           {{- if .Values.persistence.media.existingClaim }}
           claimName: {{ .Values.persistence.media.existingClaim }}
           {{- else }}
-          claimName: {{ template "es-tdarr.fullname" . }}-media
+          claimName: {{ template "es-fileflows.fullname" . }}-media
           {{- end -}}
       {{- else }}
         emptyDir: {}

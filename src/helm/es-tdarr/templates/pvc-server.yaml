@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "tdarr-server.fullname" . }}-server
+  name: {{ template "es-tdarr.fullname" . }}-server
   labels:
-    {{- include "tdarr-server.labels" . | nindent 4 }}
+    {{- include "es-tdarr.labels" . | nindent 4 }}
 {{- if .Values.persistence.server.annotations }}
   annotations:
 {{ toYaml .Values.persistence.server.annotations | indent 4 }}

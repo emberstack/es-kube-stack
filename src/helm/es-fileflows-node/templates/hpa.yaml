@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "es-tdarr.fullname" . }}
+  name: {{ include "es-fileflows-node.fullname" . }}
   labels:
-    {{- include "es-tdarr.labels" . | nindent 4 }}
+    {{- include "es-fileflows-node.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "es-tdarr.fullname" . }}
+    name: {{ include "es-fileflows-node.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

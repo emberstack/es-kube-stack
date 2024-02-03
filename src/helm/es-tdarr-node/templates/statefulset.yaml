@@ -42,12 +42,6 @@ spec:
           env:
             - name: TZ
               value: {{ .Values.config.timezone | quote }}
-            - name: NVIDIA_VISIBLE_DEVICES
-              value: all
-            - name: NVIDIA_DRIVER_CAPABILITIES
-              value: all
-            - name: CUDA_DRIVER_CAPABILITIES
-              value: all
             - name: serverIP
               value: {{ .Values.config.server.serverIP | quote }}
             - name: serverPort

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "es-tdarr.fullname" . }}
+  name: {{ include "es-fileflows-node.fullname" . }}
   labels:
-    {{- include "es-tdarr.labels" . | nindent 4 }}
+    {{- include "es-fileflows-node.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -12,12 +12,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: server
-      protocol: TCP
-      name: http
-    - port: 8265
       targetPort: http
       protocol: TCP
-      name: server
+      name: http
   selector:
-    {{- include "es-tdarr.selectorLabels" . | nindent 4 }}
+    {{- include "es-fileflows-node.selectorLabels" . | nindent 4 }}

@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "es-tdarr.name" -}}
+{{- define "es-fileflows.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "es-tdarr.fullname" -}}
+{{- define "es-fileflows.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "es-tdarr.chart" -}}
+{{- define "es-fileflows.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "es-tdarr.labels" -}}
-helm.sh/chart: {{ include "es-tdarr.chart" . }}
-{{ include "es-tdarr.selectorLabels" . }}
+{{- define "es-fileflows.labels" -}}
+helm.sh/chart: {{ include "es-fileflows.chart" . }}
+{{ include "es-fileflows.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "es-tdarr.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "es-tdarr.name" . }}
+{{- define "es-fileflows.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "es-fileflows.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "es-tdarr.serviceAccountName" -}}
+{{- define "es-fileflows.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "es-tdarr.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "es-fileflows.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

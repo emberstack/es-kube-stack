@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "es-tdarr.fullname" . }}-media
+  name: {{ template "es-fileflows.fullname" . }}-media
   labels:
-    {{- include "es-tdarr.labels" . | nindent 4 }}
+    {{- include "es-fileflows.labels" . | nindent 4 }}
 {{- if .Values.persistence.media.annotations }}
   annotations:
 {{ toYaml .Values.persistence.media.annotations | indent 4 }}

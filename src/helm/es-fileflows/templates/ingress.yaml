@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "es-tdarr.fullname" . -}}
+{{- $fullName := include "es-fileflows.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -17,7 +17,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "es-tdarr.labels" . | nindent 4 }}
+    {{- include "es-fileflows.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -51,10 +51,10 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: 8265
+                  number: 5000
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: 8265
+              servicePort: 5000
               {{- end }}
           {{- end }}
     {{- end }}
