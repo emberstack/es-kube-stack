@@ -22,7 +22,7 @@ appVersion: 1.16.0
 
 dependencies:
 - name: gpu-operator
-  version: 23.9.1
+  version: 25.3.2
   repository: https://nvidia.github.io/gpu-operator
   alias: nvidia-gpu-operator
   condition: nvidia-gpu-operator.enabled

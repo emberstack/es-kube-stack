@@ -26,7 +26,7 @@ appVersion: "1.0.0"
 
 dependencies:
 - name: metallb
-  version: 4.9.1
+  version: 6.4.20
   repository: https://charts.bitnami.com/bitnami
   alias: metallb
   condition: metallb.enabled

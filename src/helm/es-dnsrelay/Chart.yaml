@@ -26,37 +26,37 @@ appVersion: 1.0.0
 
 dependencies:
 - name: external-dns
-  version: 6.29.1
+  version: 9.0.3
   repository: https://charts.bitnami.com/bitnami
   alias: public
   condition: public.enabled
 - name: external-dns
-  version: 6.29.1
+  version: 9.0.3
   repository: https://charts.bitnami.com/bitnami
   alias: private-dns1
   condition: private-dns1.enabled
-- name: external-dns
-  version: 6.29.1
-  repository: https://charts.bitnami.com/bitnami
-  alias: private-dns2
-  condition: private-dns2.enabled
-- name: external-dns
-  version: 6.29.1
-  repository: https://charts.bitnami.com/bitnami
-  alias: private-dns3
-  condition: private-dns3.enabled
-- name: external-dns
-  version: 6.29.1
-  repository: https://charts.bitnami.com/bitnami
-  alias: private-dns4
-  condition: private-dns4.enabled
-- name: external-dns
-  version: 6.29.1
-  repository: https://charts.bitnami.com/bitnami
-  alias: private-dns5
-  condition: private-dns5.enabled
-- name: external-dns
-  version: 6.29.1
-  repository: https://charts.bitnami.com/bitnami
-  alias: private-dns6
-  condition: private-dns6.enabled
+# - name: external-dns
+#   version: 9.0.0
+#   repository: https://charts.bitnami.com/bitnami
+#   alias: private-dns2
+#   condition: private-dns2.enabled
+# - name: external-dns
+#   version: 9.0.0
+#   repository: https://charts.bitnami.com/bitnami
+#   alias: private-dns3
+#   condition: private-dns3.enabled
+# - name: external-dns
+#   version: 9.0.0
+#   repository: https://charts.bitnami.com/bitnami
+#   alias: private-dns4
+#   condition: private-dns4.enabled
+# - name: external-dns
+#   version: 9.0.0
+#   repository: https://charts.bitnami.com/bitnami
+#   alias: private-dns5
+#   condition: private-dns5.enabled
+# - name: external-dns
+#   version: 9.0.0
+#   repository: https://charts.bitnami.com/bitnami
+#   alias: private-dns6
+#   condition: private-dns6.enabled
